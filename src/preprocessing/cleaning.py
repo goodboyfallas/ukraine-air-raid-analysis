@@ -135,6 +135,26 @@ def calculate_duration(df: pd.DataFrame, start_col: str, end_col: str) -> pd.Dat
     return df
 
 
+def clean_duration(df: pd.DataFrame, max_hours: int = 24) -> pd.DataFrame:
+    if "duration_minutes" not in df.columns:
+        return df
+
+    before = len(df)
+    df = df[df["duration_minutes"] > 0]
+    removed_zero = before - len(df)
+
+    max_minutes = max_hours * 60
+    outliers = df[df["duration_minutes"] > max_minutes]
+    df.loc[df["duration_minutes"] > max_minutes, "duration_minutes"] = max_minutes
+
+    if removed_zero > 0:
+        print(f"Removed {removed_zero} alerts with 0 duration")
+    if len(outliers) > 0:
+        print(f"Capped {len(outliers)} alerts longer than {max_hours}h to {max_minutes} min")
+
+    return df
+
+
 def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     before = len(df)
     df = df.drop_duplicates()
@@ -179,6 +199,7 @@ def full_clean(df: pd.DataFrame) -> pd.DataFrame:
     if start_candidates and end_candidates:
         df = calculate_duration(df, start_candidates[0], end_candidates[0])
 
+    df = clean_duration(df)
     df = remove_duplicates(df)
 
     print(f"Cleaned dataset: {len(df)} records, {len(df.columns)} columns")

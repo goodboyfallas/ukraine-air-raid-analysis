@@ -16,30 +16,29 @@ Analysis of air raid alert patterns: trends, seasonality, regional differences, 
 
 ## Installation
 
-```bash
-git clone https://github.com/YOUR_USERNAME/ukraine-air-raid-analysis.git
+`ash
+git clone https://github.com/goodboyfallas/ukraine-air-raid-analysis.git
 cd ukraine-air-raid-analysis
 pip install -r requirements.txt
-```
+`
 
 ## Usage
 
-### Run Pipeline
+### Run Analysis Pipeline
 
-```bash
-python -m src.main
-```
+`ash
+python main.py
+`
 
-### Jupyter Notebook
+### Explore Data Interactively
 
-```bash
-cd notebooks
-jupyter notebook exploration.ipynb
-```
+`ash
+python explore.py
+`
 
 ## Project Structure
 
-```text
+`	ext
 ukraine-air-raid-analysis/
 ├── src/
 │   ├── data/
@@ -50,18 +49,17 @@ ukraine-air-raid-analysis/
 │   ├── analysis/
 │   │   ├── features.py        # Feature engineering
 │   │   └── analytics.py       # Aggregations and statistics
-│   ├── visualization/
-│   │   └── plotting.py        # Charts
-│   └── main.py                # Entry point
+│   └── visualization/
+│       └── plotting.py        # Charts
 ├── data/
 │   ├── raw/                   # Raw data
 │   └── processed/             # Cleaned data
-├── notebooks/
-│   └── exploration.ipynb      # Jupyter notebook
 ├── outputs/                   # Generated charts
+├── main.py                    # Main pipeline
+├── explore.py                 # Data exploration script
 ├── requirements.txt
 └── README.md
-```
+`
 
 ## Data Sources
 
@@ -71,6 +69,13 @@ ukraine-air-raid-analysis/
 ### Optional
 - [alerts.in.ua API](https://alerts.in.ua/) - requires token
 - [ukrainealarm.com API](https://api.ukrainealarm.com/) - requires access request
+
+## Data Notes
+
+- **Geographic level**: Analysis uses oblast-level alerts only (not raion/hromada)
+- **2025 data**: Incomplete for Nov-Dec (dataset not fully updated)
+- **Duration**: Capped at 24 hours; 0-duration alerts removed
+- **Period**: March 2022 - June 2026
 
 ## Results
 
@@ -83,7 +88,7 @@ Charts saved to outputs/:
 
 ## Key Findings
 
-- Dataset: 65,134 oblast-level alerts (Mar 2022 - Jun 2026)
+- Dataset: ~65,000 oblast-level alerts (Mar 2022 - Jun 2026)
 - Most affected: Donetsk (6,877), Zaporizhzhia (6,686), Kharkiv (6,504)
 - Average alert duration: ~80 minutes
 - Alerts fairly evenly distributed across weekdays

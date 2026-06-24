@@ -1,7 +1,7 @@
-import sys
+﻿import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent))
 
 from src.data.loader import load_csv
 from src.preprocessing.cleaning import full_clean
