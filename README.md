@@ -11,7 +11,7 @@ Complete analytical system for air raid alert data:
 - SARIMA forecasting (30-day horizon with 95% CI)
 - K-Means clustering of regions
 - Correlation analysis between regions
-- Comprehensive visualizations
+- Comprehensive visualizations (12 charts)
 
 ## Installation
 
@@ -23,22 +23,8 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Basic Analysis
-
 `ash
 python main.py
-`
-
-### Advanced Analysis (Full Pipeline)
-
-`ash
-python main_advanced.py
-`
-
-### Data Exploration
-
-`ash
-python explore.py
 `
 
 ## Project Structure
@@ -63,45 +49,21 @@ ukraine-air-raid-analysis/
 │   ├── raw/                   # Raw data
 │   └── processed/             # Cleaned data
 ├── outputs/                   # Generated charts
-├── main.py                    # Basic pipeline
-├── main_advanced.py           # Advanced analysis pipeline
-├── explore.py                 # Data exploration
+├── main.py                    # Entry point
 ├── requirements.txt
 └── README.md
 `
 
-## Analysis Modules
+## Analysis Pipeline
 
-### 1. Data Preparation
-- Daily aggregation of alert counts
-- 7-day and 30-day moving averages
-- Duration outlier removal (0 min, >24h)
-
-### 2. Time Series Decomposition
-- Additive decomposition with 7-day period
-- Separates trend, seasonality, residuals
-- ADF stationarity test
-
-### 3. Statistical Analysis
-- ACF (Autocorrelation Function)
-- PACF (Partial Autocorrelation Function)
-- Automatic ARIMA parameter suggestion
-
-### 4. SARIMA Forecasting
-- Auto-tuned parameters (p,d,q)x(P,D,Q,s)
-- 30-day forecast horizon
-- 95% confidence intervals
-- AIC/BIC model evaluation
-
-### 5. Region Clustering
-- K-Means algorithm
-- Features: total alerts, frequency, duration
-- Elbow method for optimal k
-- StandardScaler normalization
-
-### 6. Correlation Analysis
-- Cross-region correlation matrix
-- Identifies synchronized alert patterns
+1. **Data Loading** - GitHub dataset (273k records)
+2. **Cleaning** - Filter oblast-level, remove duplicates, cap duration
+3. **Features** - Day of week, hour, month, time_of_day
+4. **Decomposition** - Trend, seasonality (period=7), residuals
+5. **ACF/PACF** - Autocorrelation analysis, ARIMA parameter suggestion
+6. **SARIMA** - Auto-tuned (p,d,q)x(P,D,Q,7), 30-day forecast, 95% CI
+7. **Clustering** - K-Means on alerts/frequency/duration, elbow method
+8. **Correlation** - Cross-region correlation matrix
 
 ## Generated Outputs
 
@@ -127,6 +89,7 @@ ukraine-air-raid-analysis/
 - **Average duration**: ~80 minutes
 - **Seasonality**: Weekly pattern detected (period=7)
 - **Stationarity**: Non-stationary (requires differencing)
+- **Best model**: SARIMA(0,1,2)x(1,1,1,7), AIC=13503
 
 ## Data Notes
 
