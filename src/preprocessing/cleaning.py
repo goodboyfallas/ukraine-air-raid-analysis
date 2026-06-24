@@ -164,6 +164,32 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def drop_empty_columns(df: pd.DataFrame) -> pd.DataFrame:
+    null_pct = df.isnull().mean()
+    empty_cols = null_pct[null_pct == 1.0].index.tolist()
+    if empty_cols:
+        df = df.drop(columns=empty_cols)
+        print(f"Dropped fully null columns: {empty_cols}")
+    return df
+
+
+def exclude_sparse_regions(df: pd.DataFrame, min_alerts: int = 10) -> pd.DataFrame:
+    if "region" not in df.columns:
+        return df
+    region_counts = df["region"].value_counts()
+    sparse = region_counts[region_counts < min_alerts].index.tolist()
+    if sparse:
+        df = df[~df["region"].isin(sparse)].copy()
+        print(f"Excluded regions with <{min_alerts} alerts: {sparse}")
+    return df
+
+
+def fix_event_date(df: pd.DataFrame) -> pd.DataFrame:
+    if "event_date" in df.columns:
+        df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
+    return df
+
+
 def filter_oblast_level(df: pd.DataFrame) -> pd.DataFrame:
     if "location_type" in df.columns:
         before = len(df)
@@ -186,6 +212,7 @@ def full_clean(df: pd.DataFrame) -> pd.DataFrame:
     df = clean_column_names(df)
     df = rename_columns(df)
     df = filter_oblast_level(df)
+    df = drop_empty_columns(df)
 
     date_cols = [c for c in df.columns if "time" in c or "date" in c or "started" in c or "finished" in c]
     df = parse_dates(df, date_cols)
@@ -201,6 +228,8 @@ def full_clean(df: pd.DataFrame) -> pd.DataFrame:
 
     df = clean_duration(df)
     df = remove_duplicates(df)
+    df = exclude_sparse_regions(df, min_alerts=10)
+    df = fix_event_date(df)
 
     print(f"Cleaned dataset: {len(df)} records, {len(df.columns)} columns")
     return df

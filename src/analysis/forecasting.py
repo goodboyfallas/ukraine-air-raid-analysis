@@ -1,4 +1,4 @@
-﻿import pandas as pd
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -7,11 +7,17 @@ from statsmodels.tsa.stattools import adfuller
 from src.data.config import OUTPUTS_DIR
 
 
-def prepare_daily_series(df: pd.DataFrame) -> pd.Series:
+def prepare_daily_series(df: pd.DataFrame, start_date: str = None, end_date: str = None) -> pd.Series:
     if "started_at" not in df.columns:
         raise ValueError("started_at column required")
 
-    daily = df.set_index("started_at").resample("D").size()
+    filtered = df.copy()
+    if start_date:
+        filtered = filtered[filtered["started_at"] >= pd.Timestamp(start_date, tz="UTC")]
+    if end_date:
+        filtered = filtered[filtered["started_at"] <= pd.Timestamp(end_date, tz="UTC")]
+
+    daily = filtered.set_index("started_at").resample("D").size()
     daily = daily.asfreq("D", fill_value=0)
     daily.index.freq = "D"
     return daily

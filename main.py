@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -8,7 +8,6 @@ from src.preprocessing.cleaning import full_clean
 from src.analysis.features import build_features
 from src.analysis.analytics import summary_stats
 from src.analysis.decomposition import (
-    prepare_daily_series,
     add_moving_averages,
     adf_test,
     decompose_series,
@@ -18,6 +17,7 @@ from src.analysis.decomposition import (
     plot_acf_pacf,
 )
 from src.analysis.forecasting import (
+    prepare_daily_series,
     fit_sarima,
     forecast_sarima,
     auto_sarima_params,
@@ -81,14 +81,18 @@ def run_advanced_analysis():
     print("  Saved: acf_pacf.png")
 
     print("\n[6/8] SARIMA forecasting (30 days)...")
-    params, seasonal = auto_sarima_params(daily)
-    sarima_result = fit_sarima(daily, order=params, seasonal_order=seasonal)
+    print("  Training on 2022-2024 (complete years only)...")
+    daily_train = prepare_daily_series(df, start_date="2022-01-01", end_date="2024-12-31")
+    print(f"  Training series: {len(daily_train)} days")
+    params, seasonal = auto_sarima_params(daily_train)
+    sarima_result = fit_sarima(daily_train, order=params, seasonal_order=seasonal)
     forecast = forecast_sarima(sarima_result, steps=30)
-    plot_forecast(daily, forecast)
+    plot_forecast(daily_train, forecast)
     print("  Saved: sarima_forecast.png")
 
-    summary = forecast_summary(daily, forecast)
+    summary = forecast_summary(daily_train, forecast)
     print(f"\n  Forecast Summary:")
+    print(f"    Training period: 2022-01-01 to 2024-12-31")
     print(f"    Last observed: {summary['last_observed']} alerts")
     print(f"    Forecast mean: {summary['forecast_mean']} alerts/day")
     print(f"    95% CI: [{summary['forecast_lower']}, {summary['forecast_upper']}]")
