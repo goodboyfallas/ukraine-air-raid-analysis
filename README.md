@@ -1,18 +1,17 @@
 ﻿# Ukraine Air Raid Alerts - Time Series Analysis
 
-Python project for time series analysis of air raid alerts in Ukraine.
+Python project for time series analysis and forecasting of air raid alerts in Ukraine.
 
 ## Overview
 
-Analysis of air raid alert patterns: trends, seasonality, regional differences, duration distribution.
-
-### Features
-
-- Data loading from GitHub dataset or alerts.in.ua API
-- Data cleaning and normalization
-- Feature engineering (day of week, hour, duration)
-- Aggregations by region, week, day
-- Visualizations: time series, heatmaps, distributions
+Complete analytical system for air raid alert data:
+- Data cleaning and preprocessing
+- Time series decomposition (trend, seasonality, residuals)
+- ACF/PACF statistical analysis
+- SARIMA forecasting (30-day horizon with 95% CI)
+- K-Means clustering of regions
+- Correlation analysis between regions
+- Comprehensive visualizations
 
 ## Installation
 
@@ -24,13 +23,19 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Run Analysis Pipeline
+### Basic Analysis
 
 `ash
 python main.py
 `
 
-### Explore Data Interactively
+### Advanced Analysis (Full Pipeline)
+
+`ash
+python main_advanced.py
+`
+
+### Data Exploration
 
 `ash
 python explore.py
@@ -48,64 +53,94 @@ ukraine-air-raid-analysis/
 │   │   └── cleaning.py        # Data cleaning
 │   ├── analysis/
 │   │   ├── features.py        # Feature engineering
-│   │   └── analytics.py       # Aggregations and statistics
+│   │   ├── analytics.py       # Basic aggregations
+│   │   ├── decomposition.py   # Time series decomposition
+│   │   ├── forecasting.py     # SARIMA forecasting
+│   │   └── clustering.py      # K-Means clustering
 │   └── visualization/
 │       └── plotting.py        # Charts
 ├── data/
 │   ├── raw/                   # Raw data
 │   └── processed/             # Cleaned data
 ├── outputs/                   # Generated charts
-├── main.py                    # Main pipeline
-├── explore.py                 # Data exploration script
+├── main.py                    # Basic pipeline
+├── main_advanced.py           # Advanced analysis pipeline
+├── explore.py                 # Data exploration
 ├── requirements.txt
 └── README.md
 `
 
-## Data Sources
+## Analysis Modules
 
-### Primary (MVP)
-- [Vadimkin/ukrainian-air-raid-sirens-dataset](https://github.com/Vadimkin/ukrainian-air-raid-sirens-dataset)
+### 1. Data Preparation
+- Daily aggregation of alert counts
+- 7-day and 30-day moving averages
+- Duration outlier removal (0 min, >24h)
 
-### Optional
-- [alerts.in.ua API](https://alerts.in.ua/) - requires token
-- [ukrainealarm.com API](https://api.ukrainealarm.com/) - requires access request
+### 2. Time Series Decomposition
+- Additive decomposition with 7-day period
+- Separates trend, seasonality, residuals
+- ADF stationarity test
 
-## Data Notes
+### 3. Statistical Analysis
+- ACF (Autocorrelation Function)
+- PACF (Partial Autocorrelation Function)
+- Automatic ARIMA parameter suggestion
 
-- **Geographic level**: Analysis uses oblast-level alerts only (not raion/hromada)
-- **2025 data**: Incomplete for Nov-Dec (dataset not fully updated)
-- **Duration**: Capped at 24 hours; 0-duration alerts removed
-- **Period**: March 2022 - June 2026
+### 4. SARIMA Forecasting
+- Auto-tuned parameters (p,d,q)x(P,D,Q,s)
+- 30-day forecast horizon
+- 95% confidence intervals
+- AIC/BIC model evaluation
 
-## Results
+### 5. Region Clustering
+- K-Means algorithm
+- Features: total alerts, frequency, duration
+- Elbow method for optimal k
+- StandardScaler normalization
 
-Charts saved to outputs/:
-- alerts_over_time.png - alert trend by day
-- top_regions.png - top 10 regions
-- weekday_heatmap.png - heatmap by day of week and hour
-- duration_distribution.png - duration distribution
-- weekly_trend.png - weekly trend
+### 6. Correlation Analysis
+- Cross-region correlation matrix
+- Identifies synchronized alert patterns
+
+## Generated Outputs
+
+| Chart | Description |
+|-------|-------------|
+| alerts_over_time.png | Daily alert trend |
+| top_regions.png | Top 10 regions by count |
+| weekday_heatmap.png | Day x Hour heatmap |
+| duration_distribution.png | Duration histogram |
+| weekly_trend.png | Weekly trend with moving avg |
+| top15_duration.png | Top 15 regions by duration |
+| decomposition.png | Trend/Seasonal/Residual |
+| acf_pacf.png | Autocorrelation analysis |
+| sarima_forecast.png | 30-day forecast with CI |
+| clusters.png | Region clusters scatter |
+| elbow.png | Optimal cluster count |
+| correlation_matrix.png | Cross-region correlations |
 
 ## Key Findings
 
-- Dataset: ~65,000 oblast-level alerts (Mar 2022 - Jun 2026)
-- Most affected: Donetsk (6,877), Zaporizhzhia (6,686), Kharkiv (6,504)
-- Average alert duration: ~80 minutes
-- Alerts fairly evenly distributed across weekdays
+- **Dataset**: ~65,000 oblast-level alerts (Mar 2022 - Jun 2026)
+- **Most affected**: Donetsk (6,877), Zaporizhzhia (6,686), Kharkiv (6,504)
+- **Average duration**: ~80 minutes
+- **Seasonality**: Weekly pattern detected (period=7)
+- **Stationarity**: Non-stationary (requires differencing)
+
+## Data Notes
+
+- Geographic level: oblast-level only (not raion/hromada)
+- 2025 data: Incomplete for Nov-Dec
+- Duration: Capped at 24h; 0-duration alerts removed
 
 ## Technologies
 
 - Python 3.10+
 - pandas, numpy - data processing
 - matplotlib, seaborn - visualization
-- statsmodels - time series analysis
-
-## Possible Extensions
-
-- Forecasting with Prophet or ARIMA
-- Streamlit dashboard
-- Live API integration
-- Analysis by alert type (missile, aviation, artillery)
+- statsmodels - time series analysis, SARIMA
+- scikit-learn - K-Means clustering
 
 ## License
 

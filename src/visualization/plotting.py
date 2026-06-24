@@ -125,6 +125,34 @@ def plot_weekly_trend(df: pd.DataFrame, save: bool = True) -> plt.Figure:
     return fig
 
 
+def plot_top15_duration(df: pd.DataFrame, save: bool = True) -> plt.Figure:
+    if "duration_minutes" not in df.columns or "region" not in df.columns:
+        return None
+
+    from src.analysis.analytics import avg_duration_by_region
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    top15 = avg_duration_by_region(df).head(15)
+
+    colors = sns.color_palette("YlOrRd_r", 15)
+    bars = ax.barh(top15["region"], top15["avg_duration"], color=colors)
+
+    for bar, val in zip(bars, top15["avg_duration"]):
+        ax.text(bar.get_width() + 1, bar.get_y() + bar.get_height() / 2,
+                f"{val:.1f} min", va="center", fontsize=10)
+
+    ax.set_title("Average Alert Duration - Top 15 Regions", fontsize=14, fontweight="bold")
+    ax.set_xlabel("Average Duration (minutes)")
+    ax.invert_yaxis()
+    ax.grid(True, alpha=0.3, axis="x")
+    plt.tight_layout()
+
+    if save:
+        fig.savefig(ensure_output_dir() / "top15_duration.png", dpi=150, bbox_inches="tight")
+    return fig
+
+
 def generate_all_plots(df: pd.DataFrame) -> None:
     print("Generating visualizations...")
     plot_alerts_over_time(df)
