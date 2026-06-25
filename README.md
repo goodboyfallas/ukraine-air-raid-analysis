@@ -15,42 +15,37 @@ The system loads air raid alert data, cleans it, and performs a full analysis cy
 
 ## Installation
 
-`ash
+```bash
 git clone https://github.com/goodboyfallas/ukraine-air-raid-analysis.git
 cd ukraine-air-raid-analysis
 pip install -r requirements.txt
-`
+```
 
 ## Usage
 
-`ash
+```bash
 python main.py
-`
+```
 
 After execution, all generated charts will appear in the outputs/ folder.
 
 ## Project structure
 
-`
+```text
 ukraine-air-raid-analysis/
-│
-├── main.py                          # Entry point — full analysis pipeline
+├── main.py                          # Entry point - full analysis pipeline
 ├── requirements.txt                 # Python dependencies
 ├── README.md                        # Project documentation
 ├── .gitignore                       # Git ignore rules
-│
 ├── src/
 │   ├── __init__.py
-│   │
 │   ├── data/
 │   │   ├── __init__.py
 │   │   ├── config.py                # Paths, URLs, environment variables
 │   │   └── loader.py                # Dataset loading from GitHub
-│   │
 │   ├── preprocessing/
 │   │   ├── __init__.py
 │   │   └── cleaning.py              # Cleaning, normalization, filtering
-│   │
 │   ├── analysis/
 │   │   ├── __init__.py
 │   │   ├── features.py              # Feature generation (weekday, hour, month)
@@ -58,17 +53,14 @@ ukraine-air-raid-analysis/
 │   │   ├── decomposition.py         # Time series decomposition, ACF/PACF
 │   │   ├── forecasting.py           # SARIMA forecasting model
 │   │   └── clustering.py            # K-Means clustering and correlation
-│   │
 │   └── visualization/
 │       ├── __init__.py
 │       └── plotting.py              # All chart generation functions
-│
 ├── data/
 │   ├── raw/                         # Raw CSV data (downloaded automatically)
 │   └── processed/                   # Cleaned data after processing
-│
 └── outputs/                         # Generated PNG charts (12 files)
-`
+```
 
 ## Analysis pipeline
 
@@ -89,7 +81,7 @@ ukraine-air-raid-analysis/
 |------|-------------|
 | lerts_over_time.png | Daily alert trend |
 | 	op_regions.png | Top 10 regions by count |
-| weekday_heatmap.png | Heatmap: day of week × hour |
+| weekday_heatmap.png | Heatmap: day of week x hour |
 | duration_distribution.png | Alert duration distribution |
 | weekly_trend.png | Weekly trend with moving average |
 | 	op15_duration.png | Top 15 regions by average duration |
@@ -102,7 +94,7 @@ ukraine-air-raid-analysis/
 
 ## Key results
 
-- **Dataset**: ~65,000 oblast-level alerts (March 2022 — June 2026)
+- **Dataset**: ~65,000 oblast-level alerts (March 2022 - June 2026)
 - **Average duration**: ~80 minutes
 - **Seasonality**: 7-day cycle confirmed
 - **Stationarity**: Series is non-stationary (differencing required)
@@ -116,17 +108,17 @@ ukraine-air-raid-analysis/
 ## Data notes
 
 - Analysis is performed at oblast level only (raion/hromada excluded)
-- Luhansk Oblast excluded (1 record — occupied territory)
+- Luhansk Oblast excluded (1 record - occupied territory)
 - Duration capped at 24 hours; zero-duration alerts removed
 - SARIMA trained on 2022-2024 (complete years only)
 
 ## Technologies
 
 - **Python 3.10+**
-- **pandas**, **numpy** — data processing
-- **matplotlib**, **seaborn** — visualization
-- **statsmodels** — time series analysis, SARIMA
-- **scikit-learn** — K-Means clustering
+- **pandas**, **numpy** - data processing
+- **matplotlib**, **seaborn** - visualization
+- **statsmodels** - time series analysis, SARIMA
+- **scikit-learn** - K-Means clustering
 
 ## License
 
