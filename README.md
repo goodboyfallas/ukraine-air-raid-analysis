@@ -75,6 +75,7 @@ ukraine-air-raid-analysis/
 | duration_distribution.png | Duration histogram |
 | weekly_trend.png | Weekly trend with moving avg |
 | top15_duration.png | Top 15 regions by duration |
+| average_alert_duration_by_region_top15.csv | Recalculated Top 15 duration table |
 | decomposition.png | Trend/Seasonal/Residual |
 | acf_pacf.png | Autocorrelation analysis |
 | sarima_forecast.png | 30-day forecast with CI |

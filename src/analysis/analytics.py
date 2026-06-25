@@ -20,7 +20,7 @@ def avg_duration_by_region(df: pd.DataFrame, region_col: str = "region") -> pd.D
         df.groupby(region_col)["duration_minutes"]
         .agg(["mean", "median", "max", "count"])
         .round(1)
-        .sort_values("mean", ascending=False)
+        .sort_values(["mean", region_col], ascending=[False, True])
         .reset_index()
     )
     result.columns = [region_col, "avg_duration", "median_duration", "max_duration", "count"]

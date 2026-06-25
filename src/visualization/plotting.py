@@ -150,6 +150,11 @@ def plot_top15_duration(df: pd.DataFrame, save: bool = True) -> plt.Figure:
 
     if save:
         fig.savefig(ensure_output_dir() / "top15_duration.png", dpi=150, bbox_inches="tight")
+        top15.to_csv(
+            ensure_output_dir() / "average_alert_duration_by_region_top15.csv",
+            index=False,
+            float_format="%.1f",
+        )
     return fig
 
 
