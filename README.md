@@ -79,12 +79,12 @@ ukraine-air-raid-analysis/
 
 | File | Description |
 |------|-------------|
-| lerts_over_time.png | Daily alert trend |
+| alerts_over_time.png | Daily alert trend |
 | 	op_regions.png | Top 10 regions by count |
 | weekday_heatmap.png | Heatmap: day of week x hour |
 | duration_distribution.png | Alert duration distribution |
 | weekly_trend.png | Weekly trend with moving average |
-| 	op15_duration.png | Top 15 regions by average duration |
+| top15_duration.png | Top 15 regions by average duration |
 | decomposition.png | Trend / Seasonality / Residuals |
 | cf_pacf.png | Autocorrelation and partial autocorrelation |
 | sarima_forecast.png | 30-day forecast with 95% CI |
