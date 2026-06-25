@@ -184,6 +184,30 @@ def exclude_sparse_regions(df: pd.DataFrame, min_alerts: int = 10) -> pd.DataFra
     return df
 
 
+def trim_incomplete_monthly_tail(
+    df: pd.DataFrame,
+    date_col: str = "started_at",
+    window: int = 3,
+    min_ratio: float = 0.4,
+) -> pd.DataFrame:
+    if date_col not in df.columns:
+        return df
+
+    monthly = df.set_index(date_col).resample("MS").size()
+    if len(monthly) < window * 2:
+        return df
+
+    for idx in range(window, len(monthly)):
+        baseline = monthly.iloc[idx - window:idx].median()
+        current = monthly.iloc[idx]
+        if baseline > 0 and current < baseline * min_ratio:
+            cutoff = monthly.index[idx]
+            print(f"Trimmed incomplete monthly tail from {cutoff.date()}")
+            return df[df[date_col] < cutoff].copy()
+
+    return df
+
+
 def fix_event_date(df: pd.DataFrame) -> pd.DataFrame:
     if "event_date" in df.columns:
         df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
@@ -228,6 +252,7 @@ def full_clean(df: pd.DataFrame) -> pd.DataFrame:
 
     df = clean_duration(df)
     df = remove_duplicates(df)
+    df = trim_incomplete_monthly_tail(df)
     df = exclude_sparse_regions(df, min_alerts=10)
     df = fix_event_date(df)
 

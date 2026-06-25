@@ -95,7 +95,7 @@ ukraine-air-raid-analysis/
 ## Data Notes
 
 - Geographic level: oblast-level only (not raion/hromada)
-- 2025 data: Incomplete for Nov-Dec
+- Oblast-level coverage drops sharply after Oct 2025, so incomplete monthly tail is trimmed from Nov 2025 onward
 - Duration: Capped at 24h; 0-duration alerts removed
 
 ## Technologies
