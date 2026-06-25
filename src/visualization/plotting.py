@@ -163,11 +163,49 @@ def plot_top15_duration(df: pd.DataFrame, save: bool = True) -> plt.Figure:
 
     if save:
         fig.savefig(ensure_output_dir() / "top15_duration.png", dpi=150, bbox_inches="tight")
-        top15.to_csv(
-            ensure_output_dir() / "average_alert_duration_by_region_top15.csv",
-            index=False,
-            float_format="%.1f",
-        )
+        plot_top15_duration_table(top15, save=True)
+    return fig
+
+
+def plot_top15_duration_table(top15: pd.DataFrame, save: bool = True) -> plt.Figure:
+    table = top15.rename(
+        columns={
+            "region": "Region",
+            "avg_duration": "Avg min",
+            "median_duration": "Median min",
+            "max_duration": "Max min",
+            "count": "Alerts",
+        }
+    ).copy()
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.axis("off")
+    ax.set_title("Average Alert Duration by Region - Top 15", fontsize=14, fontweight="bold", pad=16)
+
+    values = table.values.tolist()
+    mpl_table = ax.table(
+        cellText=values,
+        colLabels=table.columns,
+        loc="center",
+        cellLoc="left",
+        colLoc="left",
+    )
+    mpl_table.auto_set_font_size(False)
+    mpl_table.set_fontsize(9)
+    mpl_table.scale(1, 1.35)
+
+    for (row, col), cell in mpl_table.get_celld().items():
+        cell.set_edgecolor("#dddddd")
+        if row == 0:
+            cell.set_facecolor("#2c3e50")
+            cell.set_text_props(color="white", weight="bold")
+        elif row % 2 == 0:
+            cell.set_facecolor("#f7f7f7")
+
+    plt.tight_layout()
+
+    if save:
+        fig.savefig(ensure_output_dir() / "average_alert_duration_by_region_top15.png", dpi=150, bbox_inches="tight")
     return fig
 
 
