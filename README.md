@@ -1,19 +1,19 @@
-﻿# Ukraine Air Raid Alerts - Time Series Analysis
+﻿# Ukraine Air Raid Alerts — Time Series Analysis & Forecasting
 
-Python project for time series analysis and forecasting of air raid alerts in Ukraine.
+Аналітична система для дослідження паттернів повітряних тривог в Україні на основі даних з березня 2022 по червень 2026.
 
-## Overview
+## Що робить проєкт
 
-Complete analytical system for air raid alert data:
-- Data cleaning and preprocessing
-- Time series decomposition (trend, seasonality, residuals)
-- ACF/PACF statistical analysis
-- SARIMA forecasting (30-day horizon with 95% CI)
-- K-Means clustering of regions
-- Correlation analysis between regions
-- Comprehensive visualizations (12 charts)
+Система завантажує дані про повітряні тривоги, очищує їх та виконує повний цикл аналізу:
 
-## Installation
+- **Декомпозиція часового ряду** — виділення тренду, сезонності (7-денний цикл) та випадкових залишків
+- **Статистичний аналіз** — ACF/PACF автокореляція, тест ADF на стаціонарність
+- **Прогнозування** — SARIMA модель з автопідбором параметрів, 30-денний прогноз з 95% довірчим інтервалом
+- **Кластеризація** — K-Means групування регіонів за інтенсивністю, частотою та тривалістю тривог
+- **Кореляційний аналіз** — матриця зв'язків між областями
+- **Візуалізація** — 12 графіків з різними зрізами даних
+
+## Встановлення
 
 `ash
 git clone https://github.com/goodboyfallas/ukraine-air-raid-analysis.git
@@ -21,91 +21,100 @@ cd ukraine-air-raid-analysis
 pip install -r requirements.txt
 `
 
-## Usage
+## Запуск
 
 `ash
 python main.py
 `
 
-## Project Structure
+Після виконання в папці outputs/ з'являться всі згенеровані графіки.
 
-`	ext
+## Структура проєкту
+
+`
 ukraine-air-raid-analysis/
 ├── src/
 │   ├── data/
-│   │   ├── config.py          # Configuration
-│   │   └── loader.py          # Data loading
+│   │   ├── config.py              # Шляхи, URL, змінні середовища
+│   │   └── loader.py              # Завантаження датасету
 │   ├── preprocessing/
-│   │   └── cleaning.py        # Data cleaning
+│   │   └── cleaning.py            # Очищення, нормалізація, фільтрація
 │   ├── analysis/
-│   │   ├── features.py        # Feature engineering
-│   │   ├── analytics.py       # Basic aggregations
-│   │   ├── decomposition.py   # Time series decomposition
-│   │   ├── forecasting.py     # SARIMA forecasting
-│   │   └── clustering.py      # K-Means clustering
+│   │   ├── features.py            # Генерація ознак (день тижня, година)
+│   │   ├── analytics.py           # Агрегації та базова статистика
+│   │   ├── decomposition.py       # Декомпозиція, ACF/PACF, ADF-тест
+│   │   ├── forecasting.py         # SARIMA прогнозування
+│   │   └── clustering.py          # K-Means кластеризація
 │   └── visualization/
-│       └── plotting.py        # Charts
+│       └── plotting.py            # Побудова графіків
 ├── data/
-│   ├── raw/                   # Raw data
-│   └── processed/             # Cleaned data
-├── outputs/                   # Generated charts
-├── main.py                    # Entry point
+│   ├── raw/                       # Сирі дані (CSV)
+│   └── processed/                 # Очищені дані
+├── outputs/                       # Згенеровані графіки
+├── main.py                        # Точка входу
 ├── requirements.txt
 └── README.md
 `
 
-## Analysis Pipeline
+## Етапи аналізу
 
-1. **Data Loading** - GitHub dataset (273k records)
-2. **Cleaning** - Filter oblast-level, remove duplicates, cap duration
-3. **Features** - Day of week, hour, month, time_of_day
-4. **Decomposition** - Trend, seasonality (period=7), residuals
-5. **ACF/PACF** - Autocorrelation analysis, ARIMA parameter suggestion
-6. **SARIMA** - Auto-tuned (p,d,q)x(P,D,Q,7), 30-day forecast, 95% CI
-7. **Clustering** - K-Means on alerts/frequency/duration, elbow method
-8. **Correlation** - Cross-region correlation matrix
+| Крок | Що відбувається |
+|------|-----------------|
+| 1. Завантаження | Завантаження CSV з GitHub (273k записів) |
+| 2. Очищення | Фільтр до oblast-level, видалення дублікатів, обмеження тривалості 24h |
+| 3. Ознаки | День тижня, година, місяць, частина доби |
+| 4. Декомпозиція | Розклад на тренд + сезонність + залишки |
+| 5. ACF/PACF | Автокореляційний аналіз, підбір параметрів ARIMA |
+| 6. SARIMA | Навчання на 2022-2024, прогноз на 30 днів |
+| 7. Кластеризація | K-Means по кількості/частоті/тривалості |
+| 8. Кореляція | Матриця зв'язків між 24 областями |
 
-## Generated Outputs
+## Згенеровані графіки
 
-| Chart | Description |
-|-------|-------------|
-| alerts_over_time.png | Daily alert trend |
-| top_regions.png | Top 10 regions by count |
-| weekday_heatmap.png | Day x Hour heatmap |
-| duration_distribution.png | Duration histogram |
-| weekly_trend.png | Weekly trend with moving avg |
-| top15_duration.png | Top 15 regions by duration |
-| average_alert_duration_by_region_top15.png | Recalculated Top 15 duration table |
-| decomposition.png | Trend/Seasonal/Residual |
-| acf_pacf.png | Autocorrelation analysis |
-| sarima_forecast.png | 30-day forecast with CI |
-| clusters.png | Region clusters scatter |
-| elbow.png | Optimal cluster count |
-| correlation_matrix.png | Cross-region correlations |
+| Файл | Опис |
+|------|------|
+| lerts_over_time.png | Тренд тривог по днях |
+| 	op_regions.png | Топ-10 регіонів за кількістю |
+| weekday_heatmap.png | Теплова карта: день тижня × година |
+| duration_distribution.png | Розподіл тривалості тривог |
+| weekly_trend.png | Тижневий тренд з ковзним середнім |
+| 	op15_duration.png | Топ-15 регіонів за середньою тривалістю |
+| decomposition.png | Тренд / Сезонність / Залишки |
+| cf_pacf.png | Автокореляція та часткова автокореляція |
+| sarima_forecast.png | 30-денний прогноз з 95% CI |
+| clusters.png | Кластери регіонів |
+| elbow.png | Метод ліктя для оптимальної кількості кластерів |
+| correlation_matrix.png | Кореляційна матриця між областями |
 
-## Key Findings
+## Ключові результати
 
-- **Dataset**: ~65,000 oblast-level alerts (Mar 2022 - Jun 2026)
-- **Most affected**: Donetsk (6,877), Zaporizhzhia (6,686), Kharkiv (6,504)
-- **Average duration**: ~80 minutes
-- **Seasonality**: Weekly pattern detected (period=7)
-- **Stationarity**: Non-stationary (requires differencing)
-- **Best model**: SARIMA(0,1,2)x(1,1,1,7), AIC=13503
+- **Датасет**: ~65 000 тривог рівня області (березень 2022 — червень 2026)
+- **Найбільш уражені**: Донецька (6 876), Запорізька (6 686), Харківська (6 502)
+- **Середня тривалість**: ~80 хвилин
+- **Сезонність**: 7-денний цикл підтверджений
+- **Стаціонарність**: Ряд нестаціонарний (потрібне диференціювання)
+- **Модель**: SARIMA(1,0,2)x(1,0,1,7), AIC=9099
+- **Прогноз**: ~45 тривог/день, 95% CI [1.4, 88.9]
 
-## Data Notes
+## Джерело даних
 
-- Geographic level: oblast-level only (not raion/hromada)
-- Oblast-level coverage drops sharply after Oct 2025, so incomplete monthly tail is trimmed from Nov 2025 onward
-- Duration: Capped at 24h; 0-duration alerts removed
+- [Vadimkin/ukrainian-air-raid-sirens-dataset](https://github.com/Vadimkin/ukrainian-air-raid-sirens-dataset)
 
-## Technologies
+## Примітки щодо даних
 
-- Python 3.10+
-- pandas, numpy - data processing
-- matplotlib, seaborn - visualization
-- statsmodels - time series analysis, SARIMA
-- scikit-learn - K-Means clustering
+- Аналіз проводиться тільки на рівні областей (raion/hromada виключені)
+- Луганська область виключена (1 запис за весь період — окупована територія)
+- Тривалість обмежена 24 годинами; тривоги з тривалістю 0 видалені
+- Навчання SARIMA проводиться на 2022-2024 (повні роки)
 
-## License
+## Технології
+
+- **Python 3.10+**
+- **pandas**, **numpy** — обробка даних
+- **matplotlib**, **seaborn** — візуалізація
+- **statsmodels** — аналіз часових рядів, SARIMA
+- **scikit-learn** — K-Means кластеризація
+
+## Ліцензія
 
 MIT
