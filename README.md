@@ -33,27 +33,41 @@ After execution, all generated charts will appear in the outputs/ folder.
 
 `
 ukraine-air-raid-analysis/
+│
+├── main.py                          # Entry point — full analysis pipeline
+├── requirements.txt                 # Python dependencies
+├── README.md                        # Project documentation
+├── .gitignore                       # Git ignore rules
+│
 ├── src/
+│   ├── __init__.py
+│   │
 │   ├── data/
-│   │   ├── config.py              # Paths, URLs, environment variables
-│   │   └── loader.py              # Dataset loading
+│   │   ├── __init__.py
+│   │   ├── config.py                # Paths, URLs, environment variables
+│   │   └── loader.py                # Dataset loading from GitHub
+│   │
 │   ├── preprocessing/
-│   │   └── cleaning.py            # Cleaning, normalization, filtering
+│   │   ├── __init__.py
+│   │   └── cleaning.py              # Cleaning, normalization, filtering
+│   │
 │   ├── analysis/
-│   │   ├── features.py            # Feature generation (weekday, hour)
-│   │   ├── analytics.py           # Aggregations and basic statistics
-│   │   ├── decomposition.py       # Decomposition, ACF/PACF, ADF test
-│   │   ├── forecasting.py         # SARIMA forecasting
-│   │   └── clustering.py          # K-Means clustering
+│   │   ├── __init__.py
+│   │   ├── features.py              # Feature generation (weekday, hour, month)
+│   │   ├── analytics.py             # Aggregations and basic statistics
+│   │   ├── decomposition.py         # Time series decomposition, ACF/PACF
+│   │   ├── forecasting.py           # SARIMA forecasting model
+│   │   └── clustering.py            # K-Means clustering and correlation
+│   │
 │   └── visualization/
-│       └── plotting.py            # Chart generation
+│       ├── __init__.py
+│       └── plotting.py              # All chart generation functions
+│
 ├── data/
-│   ├── raw/                       # Raw data (CSV)
-│   └── processed/                 # Cleaned data
-├── outputs/                       # Generated charts
-├── main.py                        # Entry point
-├── requirements.txt
-└── README.md
+│   ├── raw/                         # Raw CSV data (downloaded automatically)
+│   └── processed/                   # Cleaned data after processing
+│
+└── outputs/                         # Generated PNG charts (12 files)
 `
 
 ## Analysis pipeline
