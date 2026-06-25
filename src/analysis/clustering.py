@@ -81,9 +81,11 @@ def find_optimal_k(features: pd.DataFrame, max_k: int = 8) -> int:
 
 def plot_correlation_matrix(corr: pd.DataFrame, save: bool = True) -> plt.Figure:
     fig, ax = plt.subplots(figsize=(14, 12))
+    mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
 
     sns.heatmap(
         corr,
+        mask=mask,
         cmap="RdBu_r",
         center=0,
         annot=False,

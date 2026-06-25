@@ -11,11 +11,23 @@ def ensure_output_dir() -> Path:
     return OUTPUTS_DIR
 
 
+def _trim_sparse_tail(series: pd.Series, window: int = 30, min_ratio: float = 0.25) -> pd.Series:
+    if len(series) < window * 3:
+        return series
+
+    tail_mean = series.tail(window).mean()
+    prior_mean = series.iloc[-window * 2:-window].mean()
+    if prior_mean > 0 and tail_mean < prior_mean * min_ratio:
+        return series.iloc[:-window]
+    return series
+
+
 def plot_alerts_over_time(df: pd.DataFrame, save: bool = True) -> plt.Figure:
     fig, ax = plt.subplots(figsize=(14, 5))
 
     if "started_at" in df.columns:
         daily = df.set_index("started_at").resample("D").size()
+        daily = _trim_sparse_tail(daily)
         ax.plot(daily.index, daily.values, linewidth=0.8, color="#e74c3c")
         ax.fill_between(daily.index, daily.values, alpha=0.2, color="#e74c3c")
 
@@ -107,6 +119,7 @@ def plot_weekly_trend(df: pd.DataFrame, save: bool = True) -> plt.Figure:
     fig, ax = plt.subplots(figsize=(14, 5))
 
     weekly = df.set_index("started_at").resample("W").size()
+    weekly = _trim_sparse_tail(weekly, window=8)
     ax.bar(weekly.index, weekly.values, width=5, color="#e74c3c", alpha=0.7)
 
     if len(weekly) > 4:
@@ -165,4 +178,5 @@ def generate_all_plots(df: pd.DataFrame) -> None:
     plot_weekday_heatmap(df)
     plot_duration_distribution(df)
     plot_weekly_trend(df)
+    plot_top15_duration(df)
     print(f"All plots saved to {OUTPUTS_DIR}")
